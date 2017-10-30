@@ -79,6 +79,7 @@ instance Decl_to_ASTNode_coe : has_coe (Decl) (ASTNode) := ⟨ Decl.to_ASTNode �
 instance Stmt_to_ASTNode_coe : has_coe (Stmt) (ASTNode) := ⟨ Stmt.to_ASTNode ⟩ 
 end Smalltalk_AST_Coercions
 
+section Smalltalk_AST_Examples
 #check {NumericLit . value := 23}
 #check {SymbolLit . value := #"abcd"}
 #check {StringLit . value := "abcd"}
@@ -106,3 +107,4 @@ def arr1 := {StaticArrayLit . value := [
 #check { MessageExpr . receiver := ↑ {NumericLit . value := 23}, selector := #"abcd" , arguments := []}
 
 #check { MethodDecl . name := #"abc", block := { arguments := [], temporaries:=[],Stmts:=[] }, pragmas:=[]}
+end Smalltalk_AST_Examples
