@@ -1,3 +1,4 @@
+-- Christian Doczkal : https://www.ps.uni-saarland.de/extras/RLR-Coq/index.php
 import init.data.set
 import init.data.fin
 open set
