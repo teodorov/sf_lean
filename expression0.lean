@@ -33,19 +33,29 @@ def lookup : list ℕ → ℕ → option ℕ
 
 namespace Expr
 
+def lless : option ℕ → option ℕ → option Value :=
+λ mx my, mx >>= (λ x, my >>= λ y, return (Value.bool (x < y)))
+
+def pplus : option ℕ → option ℕ → option Value :=
+λ mx my, mx >>= (λ x, my >>= λ y, return (Value.nat (x + y)))
+
 def eval : Expr → option Value
 | (elit n) := some (Value.nat n)
 | ett := some (Value.bool true)
 | eff := some (Value.bool false)
-| (eless e₁ e₂) := (λ n m, Value.bool (n < m)) 
-                        <$> (getNat =<< eval e₁)
-                        <*> (getNat =<< eval e₂)
-| (eplus e₁ e₂) := (λ n m, Value.nat (n + m)) 
-                        <$> (getNat =<< eval e₁)
-                        <*> (getNat =<< eval e₂)
-| (eif e₁ e₂ e₃) := eval e₁ --more here
+| (eless e₁ e₂) :=  lless ((eval e₁) >>= getNat) ((eval e₂) >>=getNat)
+                    -- (λ n m, Value.bool (n < m))  
+                    --     <$> (getNat =<< eval e₁)
+                    --     <*> (getNat =<< eval e₂)
+| (eplus e₁ e₂) := pplus ((eval e₁) >>= getNat) ((eval e₂) >>=getNat)
+                    -- (λ n m, Value.nat (n + m)) 
+                    --     <$> (getNat =<< eval e₁)
+                    --     <*> (getNat =<< eval e₂)
+| (eif e₁ e₂ e₃) := eval e₁ >>= getBool >>= (λ b, if (b) then (eval e₂) else (eval e₃))
+    -- (λ b, if (b) then (eval e₂) else (eval e₃))
+    --                 =<< (getBool =<< (eval e₁))
 
 
 
-#check (eif (elit 2) (elit 3) (elit 4))
+#reduce eval (eif (eff) (elit 3) (elit 4))
 end Expr
