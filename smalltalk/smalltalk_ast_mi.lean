@@ -1,6 +1,7 @@
-import .primitives
+import .primitives1
 
 inductive static_literal 
+| nil
 | numeric (value: Number)
 | symbol (value: Symbol)
 | string (value: String)
@@ -22,6 +23,9 @@ with expression: Type
 | cascade (receiver: expression) (messages: list (message expression)) : expression
 | block (arguments: list Symbol) (temporaries: list Symbol) (statements: list statement) : expression
 | reference (name: Symbol) : expression
+| self
+| super
+| thisContext
 with statement: Type
 | exp: expression → statement
 | assignment (lhs: Symbol) (rhs: expression) : statement
@@ -31,14 +35,4 @@ structure pragma_declaration
     := (name: Symbol) (arguments: list static_literal)
 inductive method_declaration
 | mk (name: Symbol) (block: expression) (pragmas: list pragma_declaration)
-
-open static_literal
-open literal
-open expression
-open statement
-
-#check expression.reference #"xxx"
-#check assignment
-#check numeric 23
-#check assignment (#"xxx")  (literal (static (symbol #"xxx")))
-#check assignment #"xxx" (literal (static (symbol #"xxx")))
+.
