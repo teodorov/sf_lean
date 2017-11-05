@@ -24,14 +24,14 @@ open statement
                         selector := "->",
                         arguments := 
                             [ block 
-                                [] 
-                                [] 
+                                [] --no arguments
+                                [] -- no temporaries
                                 [ return
                                     ( send 
                                         self 
                                         { message .
                                             selector := "printString",
-                                            arguments := []
+                                            arguments := [] --no arguments
                                         }
                                     )  
                                 ]
