@@ -25,7 +25,7 @@ open statement
                         arguments := 
                             [ block 
                                 [] --no arguments
-                                [] -- no temporaries
+                                [] --no temporaries
                                 [ return
                                     ( send 
                                         self 

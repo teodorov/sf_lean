@@ -7,7 +7,7 @@ inductive static_literal
 | string (value: String)
 | boolean (value: Boolean)
 | character (value: Character)
-| byte (value: Byte)
+| byte_array (value: list Byte)
 | array (value: list static_literal)
 
 structure message (T : Type) : Type := 
