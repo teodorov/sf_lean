@@ -17,11 +17,11 @@ mutual inductive literal, expression, statement
 with literal: Type
 | static: static_literal → literal
 | dynamic: list expression → literal
+| block (arguments: list Symbol) (temporaries: list Symbol) (statements: list statement) : literal
 with expression: Type
 | literal: literal → expression
 | send (receiver: expression) (message: message expression) : expression
 | cascade (receiver: expression) (messages: list (message expression)) : expression
-| block (arguments: list Symbol) (temporaries: list Symbol) (statements: list statement) : expression
 | reference (name: Symbol) : expression
 | self
 | super
