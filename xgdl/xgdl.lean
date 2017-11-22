@@ -3,8 +3,7 @@ import data.vector init.meta.tactic
 -- SOUNDNESS : every provable formula is valid
 -- COMPLETENESS : every valid formula can be proven
 
-
-inductive GDL : Type
+inductive GDL 
 | bot   : GDL
 | a     : ℕ → GDL
 | seq   : GDL → GDL  → GDL 
@@ -14,20 +13,19 @@ inductive GDL : Type
 | plus  : GDL → GDL 
 | star  : GDL → GDL 
 | iter  : GDL → ℕ → ℕ → GDL 
-| arr (L : list ℕ) (j : { x : ℕ // 0 < x ∧ x ≤ L.length }) (i : { x : ℕ // 0 < x ∧ x ≤ j} ) : GDL
+| arr (L : list ℕ) (j : { x : ℕ // 0 < x ∧ x ≤ L.length }) (i : { x : ℕ // 0 ≤ x ∧ x ≤ j} ) : GDL
 .
 open GDL
 
 
 #check alt (a 1) (a 2)
-
+#check [1, 2]++[2]++[2, 3]
 #check (arr [1, 2, 3, 4, 5] ⟨ 4, begin split; apply nat.le_add_left end ⟩ ⟨2, begin split; apply nat.le_add_left end⟩ )
 
 meta def t_arrange_idx : tactic unit :=
 `[ try { split }; apply nat.le_add_left]
 
-#check (arr [1, 2, 3, 4, 5] ⟨ 5, by t_arrange_idx ⟩ ⟨2, by t_arrange_idx ⟩)
- 
+#check (arr [1] ⟨ 1, by t_arrange_idx ⟩ ⟨0, by t_arrange_idx ⟩)
 
 notation `⊥` := bot
 notation `τ` := 0
@@ -48,6 +46,8 @@ inductive sos : GDL → ℕ → GDL → Prop
 | rep₁ : ∀ i j C, 0 < i ∧ i ≤ j → sos (iter C i j) τ (iter C (i-1) (j-1))
 | rep₂ : ∀ i j C, i = 0 ∧ j > 0 → sos (iter C i j) τ (opt (seq C (iter C 0 (j-1))))
 | rep₃ : ∀ i j C, i = 0 ∧ j = 0 → sos (iter C i j) τ ⊥
+| arr₁ : ∀ i j C lC lCx, lC ≠ [] → 0 < j ∧ j ≤ list.length (lCx++[C]++lC) → 0 ≤ i ∧ i ≤ j → sos (arr (lCx++[C]++lC) ⟨ j, by assumption ⟩  ⟨ i, by assumption ⟩) τ (seq (a C) (arr (lCx++lC) ⟨ j-1, by admit ⟩ ⟨ i-1, by admit ⟩))
+--| arr₁ : ∀ i j C lC, lC ≠ [] → 0 < j ∧ j ≤ list.length (C::lC) → 0 = i → i < j → sos (arr (C::lC) ⟨ j, by assumption ⟩  ⟨ i, _ ⟩) τ (seq (a C) (arr lC ⟨ j-1, by admit ⟩ ⟨ i-1, by admit ⟩))
 .
 
 notation a `-` i `->` b := sos a i b
