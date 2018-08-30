@@ -67,7 +67,7 @@ begin
     intros d p x y, 
     induction x generalizing p, 
     { simp [delta] } ,
-    { simp [delta], rw ih_1 }
+    { simp [delta], rw x_ih }
 end
 
 def dfa_accept (d: DFA) ( p : d.S ) ( w : list d.v ) := 
@@ -112,7 +112,7 @@ begin
     intros,
     induction s1 generalizing x,
     {simp [last]},
-    {simp [last], rw ih_1},
+    {simp [last], rw s1_ih},
 end
 end last1
 

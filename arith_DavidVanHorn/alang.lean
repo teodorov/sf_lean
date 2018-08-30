@@ -7,6 +7,7 @@ inductive A
 | mult : A → A → A
 .
 open A
+
 instance : has_one A := ⟨ A.i 1 ⟩ 
 instance : has_add A := ⟨ A.plus ⟩ 
 

@@ -57,3 +57,4 @@ inductive sos_closure : GDL → GDL → Prop
 | transitive : ∀ e₁ e₂ e₃, sos_closure e₁ e₂ → sos_closure e₂ e₃ → sos_closure e₁ e₃
 
 #print sos.atom 
+
