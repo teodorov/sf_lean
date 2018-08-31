@@ -1,0 +1,8 @@
+:load logic.lambda
+
+let pair := λe₁ e₂. λf. (f e₁ e₂) -- comment
+let fst := λp. (p true)
+let snd := λp. (p false)
+
+fst (pair a b)
+snd (pair a b)
