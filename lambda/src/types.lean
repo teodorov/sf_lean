@@ -38,7 +38,7 @@ def result_to_string : result → string
 | result.overflow := "stack overflow (max recursion depth reached)"
 | result.normal := "normal form"
 instance result_has_to_string : has_to_string result := ⟨ result_to_string ⟩
-def result_has_repr : has_repr result := ⟨ result_to_string ⟩ 
+instance result_has_repr : has_repr result := ⟨ result_to_string ⟩ 
 
 def eval : ∀ (max_depth : ℕ), term → result × term
 | 0 t := (result.overflow, t)
@@ -50,7 +50,40 @@ def eval : ∀ (max_depth : ℕ), term → result × term
     | (r, t) := (r, (application t t₂))
     end
 
-#eval multi_abstraction ["a", "b"] (var "a")
-#eval currying (var "f") [(var "x"), (var "y")]
+inductive repl_command 
+| term: term → repl_command
+| quit
+| help
+| env
+| show_depth
+| clear_env
+| nothing
+| show_import_depth
+| load: string → repl_command
+| depth: nat → repl_command
+| import_depth: nat → repl_command
+| bind: string → term → repl_command
+
+def repl_command_to_string : repl_command → string
+| (repl_command.term term) := sformat! "term {term_to_string term}"
+| (repl_command.quit) := sformat! "quit"
+| (repl_command.help) := sformat! "help"
+| (repl_command.env) := sformat! "env"
+| (repl_command.show_depth) := sformat! "show_depth"
+| (repl_command.clear_env) := sformat! "clear_env"
+| (repl_command.nothing) := sformat! "nothing"
+| (repl_command.show_import_depth) := sformat! "show_import_depth"
+| (repl_command.load name) := sformat! "load {name}"
+| (repl_command.depth n) := sformat! "depth {n}"
+| (repl_command.import_depth n) := sformat! "import_depth {n}"
+| (repl_command.bind name term) := sformat! "bind [{name} := {term_to_string term}]"
+
+
+instance repl_command_has_to_string : has_to_string repl_command := ⟨ repl_command_to_string ⟩
+instance repl_command_has_repr : has_repr repl_command := ⟨ repl_command_to_string ⟩ 
+
+
+--#eval multi_abstraction ["a", "b"] (var "a")
+--#eval currying (var "f") [(var "x"), (var "y")]
 
 end lambda_types

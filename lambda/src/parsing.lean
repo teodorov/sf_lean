@@ -2,7 +2,7 @@ import data.buffer.parser
 import .types
 open parser lambda_types
 
-namespace parsing
+namespace lambda_parser
 
 def whitespaces := " \t\n\x0d".to_list
 def reserved_chars := [' ', '.', 'λ', '(', ')']
@@ -47,4 +47,37 @@ def LambdaParserCore (termParser : parser term) : parser term :=
 
 def LambdaParser := fix LambdaParserCore
 
-end parsing
+def LetParser : parser (string × term) := do
+    str "let", many1 WS,
+    name ← Word, many1 WS,
+    str ":=", many WS,
+    body ← LambdaParser,
+    pure (name, body)
+
+def Numeral : parser char :=
+sat $ λ c, list.any "0123456789".to_list (= c)
+def NumberParser := many_char1 Numeral
+
+def CommandLineParser : parser repl_command :=
+str ":quit" >> pure repl_command.quit <|>
+str ":help" >> pure repl_command.help <|>
+str ":env" >> pure repl_command.env <|>
+str ":depth" >> WS >> NumberParser >>= (pure ∘ repl_command.depth ∘ string.to_nat) <|>
+str ":import_depth" >> WS >> NumberParser >>= (pure ∘ repl_command.import_depth ∘ string.to_nat) <|>
+str ":show_depth" >> pure repl_command.show_depth <|>
+str ":show_import_depth" >> pure repl_command.show_import_depth <|>
+str ":clear_env" >> pure repl_command.clear_env <|>
+str ":load" >> WS >> many_char1 (sat (λ c, list.all (whitespaces) (≠ c))) >>= pure ∘ repl_command.load <|>
+LetParser >>= (pure ∘ function.uncurry repl_command.bind) <|>
+LambdaParser >>= (pure ∘ repl_command.term) <|>
+many WS >> pure repl_command.nothing
+
+def CommandParser: parser repl_command := do
+    cmd ← CommandLineParser,
+    optional (str "--" >> optional WS >> many (sat (λ _, tt))),
+    optional $ many WS,
+    pure cmd
+
+#eval run CommandLineParser "let pair := x".to_char_buffer
+
+end lambda_parser
