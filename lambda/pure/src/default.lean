@@ -121,9 +121,17 @@ def basic_environment : list (string × term) :=
 def initial_configuration : repl_configuration :=
     {import_depth := 1000, recursion_depth := 1000, environment := basic_environment}
 
+def load_from_files (files : list string) : io repl_configuration :=
+list.foldl
+  (λ (c : io repl_configuration) (filename : string), do
+    conf ← c, io.put_str_ln $ sformat! "Loading file “{filename}”.",
+    read_from_file conf.import_depth conf filename)
+  (pure initial_configuration)
+  files
+
 def main : io unit := do
     args ← io.cmdline_args,
-    conf ← pure initial_configuration,
+    conf ← load_from_files args,
     io.put_str_ln "Type ”:help” for help.",
     io.iterate conf 
         (λ (c : repl_configuration),
