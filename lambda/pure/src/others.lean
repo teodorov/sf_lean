@@ -43,14 +43,22 @@ by {
 --have h : 1 > 0, from nat.zero_lt_succ 0,
 --exists.intro 1 h
 
-theorem fixpoint1 : ∀ F : term, ∃ X : term, application F X = X := 
-by {
+theorem fixpoint1 (F W : term) : ∃ X : term, application F X = X :=
+begin
     intros,
+  
     let W := abstraction "x" (application F (application (var "x") (var "x"))),
-    let Z := application W W,
-    --X = WW = (λx.F(xx))W = F(WW) = FX
+    
+    --existsi (application 
+    --    (abstraction "x" (application F (application (var "x") (var "x"))))
+    --    (abstraction "x" (application F (application (var "x") (var "x"))))),
+    --simp,
+    existsi (application W W),
+    simp [W], 
     sorry
-}
+  
+    --X = WW = (λx.F(xx))W = F(WW) = FX
+end
 
 theorem fixpoint2 
     (Y : term)
