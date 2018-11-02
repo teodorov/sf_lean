@@ -4,8 +4,9 @@
 import init.data.fin
 
 structure implicit_graph :=
-(initial: ℕ)
-(fanout: ∀ y : ℕ, ℕ → fin y)
+(states : Type)
+(initial: set states)
+(fanout: states → set states)
 
 def reach (graph : implicit_graph) (known := ∀ z, fin z) (toSee := ∀ t, fin t) : ∀ y, fin y :=
     -- if ∃ x, x ∈ toSee then
@@ -40,10 +41,10 @@ def reach (graph : implicit_graph) (known := ∀ z, fin z) (toSee := ∀ t, fin 
 
 theorem pp : ∀ p q, ∃ x, x → p ∧ x → q :=
 begin
-    intros, 
+    intros, sorry
 end
 
 theorem pp1 : ∀ p q, ∃ x, (¬x ∨ p) ∧ (¬x ∨ q) :=
 begin
-    intros, 
+    intros, sorry
 end
