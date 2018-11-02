@@ -14,8 +14,8 @@ inductive event (S : Type)(t:nat)
 open event
 
 
-#check (evt nat 0) 1
+--#check (evt nat 0) 1
 
-def precedesE (A B : event) := a  b
+--def precedesE (A B : event) := a  b
 
-def precedes (A B : event) : Prop := ∀ a : A, ∀ b : B , precedesE a b
+--def precedes (A B : event) : Prop := ∀ a : A, ∀ b : B , precedesE a b
