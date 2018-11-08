@@ -426,10 +426,10 @@ theorem andb_true_elim2 : ∀ b c : bool,
     cases b,
         cases c, 
             { intro, reflexivity },
-            { simp [andb], intro, assumption },
+            { simp [andb] },
         cases c,
             { simp [andb] },
-            { simp [andb], intro, assumption }
+            { simp [andb] }
 }
 
 theorem andb_true_elim21 : ∀ b c : bool,
